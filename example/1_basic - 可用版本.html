@@ -1,0 +1,179 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>jsMind</title>
+    <link type="text/css" rel="stylesheet" href="../style/jsmind.css" />
+    <style type="text/css">
+        li {
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+
+        button {
+            width: 140px;
+        }
+
+        select {
+            width: 140px;
+        }
+
+        #layout {
+            width: 1230px;
+        }
+
+        #jsmind_nav {
+            width: 210px;
+            height: 600px;
+            border: solid 1px #ccc;
+            overflow: auto;
+            float: left;
+        }
+
+        .file_input {
+            width: 100px;
+        }
+
+        button.sub {
+            width: 100px;
+        }
+
+        #jsmind_container {
+            float: left;
+            width: 1000px;
+            height: 600px;
+            border: solid 1px #ccc;
+            background: #f4f4f4;
+        }
+        jmnode{
+            overflow:inherit;
+        }
+        .jsmind_tanchuang{
+            background: #afafaf;
+            width: 200px;
+            height: 200px;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            z-index: 3;
+        }
+    </style>
+</head>
+<body>
+    <div id="layout">
+        <div id="jsmind_nav">
+            <ul>
+                <li><button onclick="add_node();">add a node</button></li>
+                <li><button onclick="remove_node();">remove node</button></li>
+            </ul>
+
+
+
+        </div>
+        <div id="jsmind_container"></div>
+    </div>
+    <script src="../js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="../js/jsmind.js"></script>
+    <!--<script type="text/javascript" src="../js/jsmind.draggable.js"></script>
+    <script type="text/javascript" src="../js/jsmind.screenshot.js"></script>-->
+    <script type="text/javascript">
+
+        var _jm = null;
+        function open_empty() {
+            var options = {
+                container: 'jsmind_container',
+                theme: 'greensea',
+                editable: true
+            }
+            _jm = jsMind.show(options);
+        }
+
+        function open_json() {
+            var mind = {
+                "meta": {
+                    "name": "jsMind remote",
+                    "author": "hizzgdev@163.com",
+                    "version": "0.2"
+                },
+                "format": "node_tree",
+                "data": {
+                    "id": "root", "topic": "jsMind", "children": [
+                        {
+                            "id": "easy", "topic": "Easy<div class='jsmind_tanchuang'></div>", "direction": "left", "children": [
+                               { "id": "easy1", "topic": "Easy to show" },
+                               { "id": "easy2", "topic": "Easy to edit" },
+                               { "id": "easy3", "topic": "Easy to store" },
+                               { "id": "easy4", "topic": "Easy to embed" },
+                               { "id": "other3", "background-image": "ant.png", "width": "100", "height": "100" }
+                            ]
+                        },
+                        {
+                            "id": "open", "topic": "Open Source", "direction": "right", "children": [
+                               { "id": "open1", "topic": "on GitHub", "background-image": "ant.png", "foreground-color": "red" },
+                               { "id": "open2", "topic": "BSD License" }
+                            ]
+                        },
+                        {
+                            "id": "powerful", "topic": "Powerful", "direction": "right", "children": [
+                               { "id": "powerful1", "topic": "Base on Javascript" },
+                               { "id": "powerful2", "topic": "Base on HTML5" },
+                               { "id": "powerful3", "topic": "Depends on you" }
+                            ]
+                        },
+                        {
+                            "id": "other", "topic": "test node", "direction": "left", "children": [
+                               { "id": "other1", "topic": "I'm from local variable" },
+                               { "id": "other2", "topic": "I can do everything" }
+                            ]
+                        }
+                    ]
+                }
+            }
+            _jm.show(mind);
+        }
+
+        //获取当前选择的节点
+        function get_selected_nodeid() {
+            var selected_node = _jm.get_selected_node();
+            if (!!selected_node) {
+                return selected_node.id;
+            } else {
+                return null;
+            }
+        }
+        //提示内容
+        function prompt_info(msg) {
+            alert(msg);
+        }
+        //添加子节点
+        function add_node() {
+            var selected_node = _jm.get_selected_node(); // as parent of new node
+            if (!selected_node) { prompt_info('请先选择一个'); return; }
+
+            var nodeid = jsMind.util.uuid.newid();
+            var topic = '* Node_' + nodeid.substr(0, 5) + ' *';
+            var node = _jm.add_node(selected_node, nodeid, topic);
+        }
+        //删除当前及子节点
+        function remove_node() {
+            var selected_id = get_selected_nodeid();
+            if (!selected_id) { prompt_info('请先选择一个'); return; }
+
+            _jm.remove_node(selected_id);
+        }
+
+
+
+
+
+
+
+        open_empty();
+
+        $(document).ready(function () {
+            open_json();
+        })
+    </script>
+</body>
+</html>
